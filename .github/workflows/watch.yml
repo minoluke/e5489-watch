@@ -1,0 +1,79 @@
+name: サンライズ空席ウォッチ
+
+on:
+  # cron は UTC 指定。JST 5:30〜23:30（e5489 の営業時間）を30分間隔で回す
+  #   JST 05:30 = UTC 20:30 / JST 23:30 = UTC 14:30
+  schedule:
+    - cron: '30 20 * * *'      # JST 5:30
+    - cron: '0,30 21-23 * * *' # JST 6:00〜8:30
+    - cron: '0,30 0-14 * * *'  # JST 9:00〜23:30
+  workflow_dispatch:
+    inputs:
+      dry_run:
+        description: 'メールを送らず照会だけ行う'
+        type: boolean
+        default: true
+      force:
+        description: '営業時間外でも実行する'
+        type: boolean
+        default: true
+
+# 前の実行が終わる前に次が始まると state.json の push が衝突するため直列化する
+concurrency:
+  group: sunrise-watch
+  cancel-in-progress: false
+
+permissions:
+  contents: write   # state.json をコミットして次回の実行に引き継ぐため
+
+jobs:
+  check:
+    runs-on: ubuntu-latest
+    timeout-minutes: 10
+    steps:
+      - uses: actions/checkout@v5
+
+      - uses: actions/setup-node@v5
+        with:
+          node-version: '20'
+          cache: npm
+
+      - run: npm ci
+
+      # ubuntu ランナーには Chrome がプリインストールされている。念のため確認する
+      - name: Chrome を確認
+        run: google-chrome --version
+
+      - name: 空席を照会
+        env:
+          GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
+          GMAIL_USER: ${{ secrets.GMAIL_USER }}
+          MAIL_TO: ${{ secrets.MAIL_TO }}
+        run: |
+          ARGS=""
+          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --no-email"; fi
+          if [ "${{ inputs.force }}"   = "true" ]; then ARGS="$ARGS --force"; fi
+          node check.js $ARGS
+
+      # 通知済みかどうかを次回に引き継ぐ。差分がある時だけコミットする
+      - name: state.json を保存
+        if: always()
+        run: |
+          if [ -n "$(git status --porcelain state.json)" ]; then
+            git config user.name  'github-actions[bot]'
+            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
+            git add state.json
+            git commit -m "state: $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
+            git pull --rebase --autostash
+            git push
+          fi
+
+      # 実行ログを残す（照会に失敗した回の原因を後から追えるように）
+      - name: ログを保存
+        if: always()
+        uses: actions/upload-artifact@v5
+        with:
+          name: watch-log-${{ github.run_id }}
+          path: watch.log
+          retention-days: 7
+          if-no-files-found: ignore

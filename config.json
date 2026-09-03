@@ -1,0 +1,19 @@
+{
+  "date": "2026-09-27",
+  "departStName": "岡山",
+  "arriveStName": "東京",
+  "searchHour": "14",
+  "searchMinute": "05",
+  "trains": [
+    "izumo",
+    "seto"
+  ],
+  "watchFacilities": [
+    "サンライズツイン",
+    "シングルツイン"
+  ],
+  "serviceHours": {
+    "start": "05:30",
+    "end": "23:30"
+  }
+}

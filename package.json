@@ -1,0 +1,16 @@
+{
+  "name": "e5489-watch",
+  "version": "1.0.0",
+  "private": true,
+  "description": "e5489 でサンライズ出雲・瀬戸の空席を監視し、空きが出たらメール通知する",
+  "main": "check.js",
+  "scripts": {
+    "check": "node check.js",
+    "dry": "node check.js --no-email",
+    "test-email": "node check.js --test-email"
+  },
+  "dependencies": {
+    "nodemailer": "^6.9.14",
+    "patchright": "^1.61.1"
+  }
+}
