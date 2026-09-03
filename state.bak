@@ -1,0 +1,70 @@
+{
+  "scope": "2026-09-27|岡山→東京",
+  "statuses": {
+    "サンライズ出雲|シングルツイン(禁煙)": {
+      "mark": "×",
+      "bookable": false,
+      "facility": "シングルツイン",
+      "smoking": "禁煙",
+      "train": "izumo",
+      "kind": "std"
+    },
+    "サンライズ出雲|シングルツイン(喫煙)": {
+      "mark": "×",
+      "bookable": false,
+      "facility": "シングルツイン",
+      "smoking": "喫煙",
+      "train": "izumo",
+      "kind": "std"
+    },
+    "サンライズ瀬戸|サンライズツイン(禁煙)": {
+      "mark": "×",
+      "bookable": false,
+      "facility": "サンライズツイン",
+      "smoking": "禁煙",
+      "train": "seto",
+      "kind": "twin"
+    },
+    "サンライズ瀬戸|サンライズツイン(喫煙)": {
+      "mark": "×",
+      "bookable": false,
+      "facility": "サンライズツイン",
+      "smoking": "喫煙",
+      "train": "seto",
+      "kind": "twin"
+    },
+    "サンライズ瀬戸|シングルツイン(禁煙)": {
+      "mark": "×",
+      "bookable": false,
+      "facility": "シングルツイン",
+      "smoking": "禁煙",
+      "train": "seto",
+      "kind": "std"
+    },
+    "サンライズ瀬戸|シングルツイン(喫煙)": {
+      "mark": "×",
+      "bookable": false,
+      "facility": "シングルツイン",
+      "smoking": "喫煙",
+      "train": "seto",
+      "kind": "std"
+    },
+    "サンライズ出雲|サンライズツイン(禁煙)": {
+      "mark": "×",
+      "bookable": false,
+      "facility": "サンライズツイン",
+      "smoking": "禁煙",
+      "train": "izumo",
+      "kind": "twin"
+    },
+    "サンライズ出雲|サンライズツイン(喫煙)": {
+      "mark": "×",
+      "bookable": false,
+      "facility": "サンライズツイン",
+      "smoking": "喫煙",
+      "train": "izumo",
+      "kind": "twin"
+    }
+  },
+  "lastRun": "2026-09-03T11:13:17.811Z"
+}

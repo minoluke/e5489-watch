@@ -208,7 +208,7 @@ async function main() {
      * 速く終わり、サイトへの連打にもならない。
      */
     let pending = targets;
-    for (let round = 1; round <= 3 && pending.length; round++) {
+    for (let round = 1; round <= 4 && pending.length; round++) {
       if (round > 1) {
         const wait = jitter(8000 * (round - 1));
         log(`混雑中で ${pending.length} ページ未取得。${Math.round(wait / 1000)} 秒あけて再試行`);

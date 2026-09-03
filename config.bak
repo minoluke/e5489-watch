@@ -1,5 +1,5 @@
 {
-  "date": "2026-10-01",
+  "date": "2026-09-27",
   "departStName": "岡山",
   "arriveStName": "東京",
   "searchHour": "14",
@@ -9,7 +9,8 @@
     "seto"
   ],
   "watchFacilities": [
-    "ノビノビ座席"
+    "サンライズツイン",
+    "シングルツイン"
   ],
   "serviceHours": {
     "start": "05:30",
