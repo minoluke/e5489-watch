@@ -8,7 +8,15 @@
       "smoking": "禁煙",
       "train": "izumo",
       "kind": "std"
+    },
+    "サンライズ瀬戸|ノビノビ座席(禁煙)": {
+      "mark": "○",
+      "bookable": true,
+      "facility": "ノビノビ座席",
+      "smoking": "禁煙",
+      "train": "seto",
+      "kind": "std"
     }
   },
-  "lastRun": "2026-09-03T11:22:05.527Z"
+  "lastRun": "2026-09-03T11:23:33.865Z"
 }
