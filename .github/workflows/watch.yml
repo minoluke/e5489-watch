@@ -17,6 +17,10 @@ on:
         description: '営業時間外でも実行する'
         type: boolean
         default: true
+      test_email:
+        description: '空席照会はせず、テストメールだけ送って疎通確認する'
+        type: boolean
+        default: false
 
 # 前の実行が終わる前に次が始まると state.json の push が衝突するため直列化する
 concurrency:
@@ -50,6 +54,10 @@ jobs:
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
         run: |
+          if [ "${{ inputs.test_email }}" = "true" ]; then
+            node check.js --test-email
+            exit $?
+          fi
           ARGS=""
           if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --no-email"; fi
           if [ "${{ inputs.force }}"   = "true" ]; then ARGS="$ARGS --force"; fi
