@@ -10,6 +10,7 @@
       "kind": "std",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ出雲|シングルツイン(禁煙)": {
@@ -21,6 +22,7 @@
       "kind": "std",
       "capacity": 2,
       "roomsNeeded": 1,
+      "level": 0,
       "enough": false
     },
     "サンライズ出雲|シングルツイン(喫煙)": {
@@ -32,6 +34,7 @@
       "kind": "std",
       "capacity": 2,
       "roomsNeeded": 1,
+      "level": 0,
       "enough": false
     },
     "サンライズ出雲|シングルデラックス(禁煙)": {
@@ -43,6 +46,7 @@
       "kind": "std",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ出雲|シングルデラックス(喫煙)": {
@@ -54,6 +58,7 @@
       "kind": "std",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ出雲|シングル(禁煙)": {
@@ -65,6 +70,7 @@
       "kind": "single",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ出雲|シングル(喫煙)": {
@@ -76,6 +82,7 @@
       "kind": "single",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ出雲|ソロ(禁煙)": {
@@ -87,6 +94,7 @@
       "kind": "solo",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|サンライズツイン(禁煙)": {
@@ -98,6 +106,7 @@
       "kind": "twin",
       "capacity": 2,
       "roomsNeeded": 1,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|サンライズツイン(喫煙)": {
@@ -109,6 +118,7 @@
       "kind": "twin",
       "capacity": 2,
       "roomsNeeded": 1,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|シングル(禁煙)": {
@@ -120,6 +130,7 @@
       "kind": "single",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|シングル(喫煙)": {
@@ -131,6 +142,7 @@
       "kind": "single",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|ソロ(禁煙)": {
@@ -142,6 +154,7 @@
       "kind": "solo",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ出雲|サンライズツイン(禁煙)": {
@@ -153,6 +166,7 @@
       "kind": "twin",
       "capacity": 2,
       "roomsNeeded": 1,
+      "level": 0,
       "enough": false
     },
     "サンライズ出雲|サンライズツイン(喫煙)": {
@@ -164,17 +178,19 @@
       "kind": "twin",
       "capacity": 2,
       "roomsNeeded": 1,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|ノビノビ座席(禁煙)": {
-      "mark": "△",
-      "minSeats": 1,
+      "mark": "×",
+      "minSeats": 0,
       "facility": "ノビノビ座席",
       "smoking": "禁煙",
       "train": "seto",
       "kind": "std",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|シングルツイン(禁煙)": {
@@ -186,6 +202,7 @@
       "kind": "std",
       "capacity": 2,
       "roomsNeeded": 1,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|シングルツイン(喫煙)": {
@@ -197,6 +214,7 @@
       "kind": "std",
       "capacity": 2,
       "roomsNeeded": 1,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|シングルデラックス(禁煙)": {
@@ -208,6 +226,7 @@
       "kind": "std",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|シングルデラックス(喫煙)": {
@@ -219,8 +238,9 @@
       "kind": "std",
       "capacity": 1,
       "roomsNeeded": 2,
+      "level": 0,
       "enough": false
     }
   },
-  "lastRun": "2026-09-06T15:20:19.416Z"
+  "lastRun": "2026-09-06T15:43:53.917Z"
 }
