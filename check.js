@@ -208,10 +208,18 @@ async function main() {
           const st = STATUS[col.status] || { mark: col.status || '?', minSeats: 0 };
           const capacity = S.FACILITY_CAPACITY[facility] || 1;
           const roomsNeeded = Math.ceil(partySize / capacity);
+          /*
+           * level 2 … 人数分を確実に確保できる（○、または1室で足りる設備の△）
+           * level 1 … 空きはあるが人数分あるとは限らない（2席以上必要な設備の△＝1〜10席）
+           * level 0 … 空きなし
+           * △で1席しかない可能性はあるが、2席以上ある可能性のほうが高い。
+           * 見逃す損失のほうが大きいので level 1 でも通知し、要確認として区別する。
+           */
+          const level = st.minSeats >= roomsNeeded ? 2 : (st.minSeats >= 1 ? 1 : 0);
           observed[`${S.TRAIN_NAME[t.train]}|${facility}(${smoking})`] = {
             ...st, facility, smoking, train: t.train, kind: t.kind,
-            capacity, roomsNeeded,
-            enough: st.minSeats >= roomsNeeded,   // 人数分を確実に押さえられるか
+            capacity, roomsNeeded, level,
+            enough: level === 2,
           };
         }
       }
@@ -273,7 +281,7 @@ async function main() {
   }
   log(`${partySize}名で照会。現在の空席: ` + keys.map((k) => {
     const o = observed[k];
-    return `${k}=${o.mark}${o.enough ? '(確保可)' : ''}`;
+    return `${k}=${o.mark}${o.level === 2 ? '(確保可)' : o.level === 1 ? '(要確認)' : ''}`;
   }).join('  '));
 
   // 前回 × → 今回 ○/△ になったものだけ通知する。
@@ -281,31 +289,44 @@ async function main() {
   const scope = `${dateLabel}|${cfg.departStName}→${cfg.arriveStName}`;
   const state = loadJson(STATE_PATH, {});
   const prev = state.scope === scope ? (state.statuses || {}) : {};
-  const newly = keys.filter((k) => observed[k].enough && !(prev[k] && prev[k].enough));
+  const minLevel = cfg.notifyUncertain === false ? 2 : 1;
+  const newly = keys.filter((k) => {
+    const now = observed[k].level;
+    const before = (prev[k] && prev[k].level) || 0;
+    return now >= minLevel && now > before;   // 空きが増えた方向にだけ通知する
+  });
 
   if (newly.length && !FLAG_NO_EMAIL) {
-    const lines = newly.map((k) => {
+    const fmt = (k) => {
       const o = observed[k];
       const [train, fac] = k.split('|');
       const how = o.capacity >= partySize
         ? `1室で${partySize}名`
-        : `${o.roomsNeeded}席（1席あたり${o.capacity}名）`;
+        : `${o.roomsNeeded}席必要（1席あたり${o.capacity}名）`;
       return `  ${o.mark} ${train}　${fac}　${how}\n     予約 → ${S.loginBookingUrl({ ...params, train: o.train, kind: o.kind })}`;
-    }).join('\n\n');
-    const subject = `🚆 サンライズ ${partySize}名確保できます ${dateLabel}: ` + newly.map((k) => k.replace('|', ' ')).join(' / ');
+    };
+    const certain = newly.filter((k) => observed[k].level === 2);
+    const maybe = newly.filter((k) => observed[k].level === 1);
+
+    const sections = [];
+    if (certain.length) sections.push(`【${partySize}名を確保できます】\n` + certain.map(fmt).join('\n\n'));
+    if (maybe.length) sections.push(`【要確認：空きはありますが${partySize}名分あるか不明】\n` + maybe.map(fmt).join('\n\n'));
+
+    const head = certain.length ? `🚆 サンライズ ${partySize}名確保できます` : `🚆 サンライズ 空きあり(要確認)`;
+    const subject = `${head} ${dateLabel}: ` + (certain.length ? certain : maybe).map((k) => k.replace('|', ' ')).join(' / ');
     const body =
-      `${dateLabel} ${cfg.departStName} → ${cfg.arriveStName}\n` +
-      `${partySize}名ぶんを確実に確保できる設備が空きました。\n\n${lines}\n\n` +
-      `── 現在の全体状況（${partySize}名で判定）──\n` +
+      `${dateLabel} ${cfg.departStName} → ${cfg.arriveStName}（${partySize}名）\n\n` +
+      sections.join('\n\n') +
+      `\n\n── 現在の全体状況 ──\n` +
       keys.map((k) => {
         const o = observed[k];
-        const need = o.roomsNeeded > 1 ? `${o.roomsNeeded}席必要` : '1室で足りる';
-        return `  ${o.mark} ${k.replace('|', '　')}　${need}${o.enough ? ' → 確保可' : ''}`;
+        const tag = o.level === 2 ? ' → 確保可' : o.level === 1 ? ' → 要確認' : '';
+        return `  ${o.mark} ${k.replace('|', '　')}${tag}`;
       }).join('\n') +
-      `\n\n※ △ は1〜10席のため、2席以上必要な設備では「確保可」と判定していません。\n` +
+      `\n\n※ △ は1〜10席です。1人用の設備では2席あるか確定できないため「要確認」としています。\n` +
       `寝台は数分で埋まります。すぐ確保してください。\n` +
       (failures.length ? `\n※ 取得できなかったページ: ${failures.join(', ')}\n` : '') +
-      `\n（同じ設備が確保可のあいだは繰り返し通知しません）`;
+      `\n（同じ設備の状態が変わらないあいだは繰り返し通知しません）`;
     try {
       await sendMail(cfg, subject, body);
       log(`★ メール通知: ${newly.join(', ')}`);

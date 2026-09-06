@@ -20,5 +20,6 @@
     "start": "00:10",
     "end": "23:45"
   },
-  "partySize": 2
+  "partySize": 2,
+  "notifyUncertain": true
 }
