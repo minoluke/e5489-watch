@@ -233,7 +233,16 @@ async function main() {
     await browser.close();
   }
 
-  const keys = Object.keys(observed).sort();
+  // config の watchFacilities の並び順を優先度とみなして並べる（本命が件名の先頭に来るように）
+  const rank = (k) => {
+    const o = observed[k];
+    const i = cfg.watchFacilities.indexOf(o.facility);
+    return [i < 0 ? 99 : i, o.train, o.smoking === '禁煙' ? 0 : 1];
+  };
+  const keys = Object.keys(observed).sort((a, b) => {
+    const [x, y] = [rank(a), rank(b)];
+    return x[0] - y[0] || String(x[1]).localeCompare(String(y[1])) || x[2] - y[2];
+  });
   if (!keys.length) {
     log('ERROR: 空席情報を1件も取得できませんでした（サイト構造の変更、または全ページが混雑中）');
     process.exitCode = 1;
