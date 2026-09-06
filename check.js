@@ -183,7 +183,7 @@ async function main() {
     // GitHub Actions の Linux ランナーはコンテナ内で動くため sandbox を切らないと起動しない
     args: process.env.CI ? ['--no-sandbox', '--disable-dev-shm-usage'] : [],
   });
-  const observed = {};   // key -> {mark, bookable, facility, train, kind}
+  const observed = {};   // key -> {mark, minSeats, enough, facility, train, kind}
   const failures = [];
   let suspended = false; // e5489 が受付停止中（23:50〜0:05）
   try {
