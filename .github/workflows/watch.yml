@@ -1,10 +1,10 @@
 name: サンライズ空席ウォッチ
 
 on:
-  # e5489 が止まるのは JST 23:50〜0:05 の15分だけなので24時間回す。
-  # その15分に当たった実行はスクリプト側が受付停止を検出して静かに抜ける。
-  # なお GitHub はスケジュール実行を負荷に応じて間引くため、30分間隔で登録しても
-  # 実効間隔は数時間になる（実測: 中央値約3時間）。機会を増やす意味で30分のままにする。
+  # GitHub はスケジュール実行を負荷に応じて激しく間引く（実測: 30分設定に対し中央値179分）。
+  # そこで「起動されたら1つのジョブの中で長時間ループし、自前で間隔を刻む」方式にする。
+  # 間引かれるのは起動だけで、走り出したジョブの中の sleep には干渉されない。
+  # 1回の起動が約5時間半をカバーするので、起動が数時間おきでも監視は途切れない。
   schedule:
     - cron: '0,30 * * * *'
   workflow_dispatch:
@@ -22,18 +22,23 @@ on:
         type: boolean
         default: false
 
-# 前の実行が終わる前に次が始まると state.json の push が衝突するため直列化する
 concurrency:
-  group: sunrise-watch
-  cancel-in-progress: false
+  # 新しくスケジュール起動されたら、走っている古いループを止めて引き継ぐ。
+  # 手動実行は別グループにして、監視ループを巻き添えで止めないようにする。
+  group: sunrise-watch-${{ github.event_name }}
+  cancel-in-progress: true
 
 permissions:
-  contents: write   # state.json をコミットして次回の実行に引き継ぐため
+  contents: write   # state.json をコミットして通知済み状態を引き継ぐため
+
+env:
+  LOOP_MINUTES: 330   # ループを回す時間（GitHub のジョブ上限は6時間）
+  CHECK_INTERVAL: 900 # ループ内の照会間隔（秒）
 
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 20
+    timeout-minutes: 350
     steps:
       - uses: actions/checkout@v5
 
@@ -44,44 +49,60 @@ jobs:
 
       - run: npm ci
 
-      # ubuntu ランナーには Chrome がプリインストールされている。念のため確認する
       - name: Chrome を確認
         run: google-chrome --version
 
-      - name: 空席を照会
+      - name: 空席を監視
         env:
           GMAIL_APP_PASSWORD: ${{ secrets.GMAIL_APP_PASSWORD }}
           GMAIL_USER: ${{ secrets.GMAIL_USER }}
           MAIL_TO: ${{ secrets.MAIL_TO }}
         run: |
-          if [ "${{ inputs.test_email }}" = "true" ]; then
-            node check.js --test-email
-            exit $?
-          fi
-          ARGS=""
-          if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --no-email"; fi
-          if [ "${{ inputs.force }}"   = "true" ]; then ARGS="$ARGS --force"; fi
-          node check.js $ARGS
+          set -u
+          git config user.name  'github-actions[bot]'
+          git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
 
-      # 通知済みかどうかを次回に引き継ぐ。差分がある時だけコミットする
-      - name: state.json を保存
-        if: always()
-        run: |
-          if [ -n "$(git status --porcelain state.json)" ]; then
-            git config user.name  'github-actions[bot]'
-            git config user.email '41898282+github-actions[bot]@users.noreply.github.com'
-            git add state.json
-            git commit -m "state: $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]"
-            git pull --rebase --autostash
-            git push
+          # state.json に変化があればコミットして次の起動へ引き継ぐ。
+          # 競合したら rebase せず、自分の state を正としてやり直す
+          # （このループが唯一の書き手なので、リモートより手元のほうが新しい）。
+          save_state() {
+            git status --porcelain state.json | grep -q . || return 0
+            for _ in 1 2 3; do
+              cp state.json "$RUNNER_TEMP/state.json"
+              git add state.json
+              git commit -q -m "state: $(date -u +%Y-%m-%dT%H:%M:%SZ) [skip ci]" || true
+              if git push -q 2>/dev/null; then return 0; fi
+              git fetch -q origin main
+              git reset -q --hard origin/main
+              cp "$RUNNER_TEMP/state.json" state.json
+            done
+            echo "state の push を諦めた（ジョブ内では保持されるので監視は継続）"
+          }
+
+          if [ "${{ github.event_name }}" != "schedule" ]; then
+            # 手動実行は1回だけ
+            if [ "${{ inputs.test_email }}" = "true" ]; then
+              node check.js --test-email
+              exit $?
+            fi
+            ARGS=""
+            if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --no-email"; fi
+            if [ "${{ inputs.force }}"   = "true" ]; then ARGS="$ARGS --force"; fi
+            node check.js $ARGS
+            save_state
+            exit 0
           fi
 
-      # 実行ログを残す（照会に失敗した回の原因を後から追えるように）
-      - name: ログを保存
-        if: always()
-        uses: actions/upload-artifact@v5
-        with:
-          name: watch-log-${{ github.run_id }}
-          path: watch.log
-          retention-days: 7
-          if-no-files-found: ignore
+          # スケジュール起動: 時間いっぱいループする
+          END=$(( $(date +%s) + LOOP_MINUTES * 60 ))
+          N=0
+          while [ "$(date +%s)" -lt "$END" ]; do
+            N=$(( N + 1 ))
+            echo "──── 照会 #${N}  $(TZ=Asia/Tokyo date '+%m/%d %H:%M JST') ────"
+            node check.js || echo "この回は失敗（ループは継続）"
+            save_state
+            REMAIN=$(( END - $(date +%s) ))
+            [ "$REMAIN" -le "$CHECK_INTERVAL" ] && break
+            sleep "$CHECK_INTERVAL"
+          done
+          echo "ループ終了: ${N} 回照会した"

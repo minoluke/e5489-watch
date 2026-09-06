@@ -149,29 +149,35 @@ launchctl unload ~/Library/LaunchAgents/com.e5489.watch.plist
 
 間隔を変えるときは plist の `StartInterval`（秒）を編集して unload → load し直してください。
 
-### 5. GitHub Actions で動かす場合
+### 5. GitHub Actions で動かす場合（既定の運用）
 
-`.github/workflows/watch.yml` が **JST 5:30〜23:30 を30分間隔**で回します（cron は UTC 指定）。
-`state.json` はワークフローがリポジトリにコミットして次回に引き継ぐため、通知済みの設備を覚えています。
+**GitHub はスケジュール実行を負荷に応じて激しく間引きます。** 実測すると、30分間隔で登録しても
+実際の起動は1日7〜8回、間隔の中央値は179分（最長455分）でした。設定の約1/6しか動きません。
 
-手動で試すときは Actions タブから「サンライズ空席ウォッチ」→ Run workflow、または:
+そこで **1回起動されたら1つのジョブの中で長時間ループし、自前で間隔を刻む**方式にしています。
+GitHub が間引けるのは起動だけで、走り出したジョブの中の `sleep` には干渉しません。
+
+| 環境変数 | 既定 | 意味 |
+| --- | --- | --- |
+| `LOOP_MINUTES` | 330 | ループを回す時間（分）。GitHub のジョブ上限は6時間 |
+| `CHECK_INTERVAL` | 900 | ループ内の照会間隔（秒）＝15分 |
+
+1回の起動が5.5時間をカバーするため、起動が中央値179分ごとに来る限り監視は途切れません。
+`concurrency` は `cancel-in-progress: true` にしてあり、新しく起動されたら古いループを止めて引き継ぎます。
+
+手動実行（`workflow_dispatch`）はループせず1回だけ照会します。監視ループとは別の
+concurrency グループなので、手動実行が走っているループを巻き添えで止めることはありません。
 
 ```bash
-gh workflow run watch.yml -f dry_run=true -f force=true
+gh workflow run watch.yml -f dry_run=true -f force=true   # 照会だけ
+gh workflow run watch.yml -f test_email=true              # メール疎通確認
 ```
 
-`dry_run` はメールを送らず照会だけ、`force` は営業時間外でも実行します。
-
-**実測した所要時間は1回あたり約1分49秒**（うち照会が93秒）です。GitHub Actions は
-ジョブ単位で分に切り上げ課金されるため2分/回、30分間隔なら約2,200分/月になります。
-**public リポジトリなら実行時間は無制限・無料**ですが、private の無料枠は2,000分/月なので
-private で運用するなら間隔を45分以上にしてください。
-
-なお GitHub の cron は混雑時に5〜20分ずれます。寝台のキャンセルは数分で消えるので、
-確実性を求めるなら Mac の launchd のほうが有利です（遅延なし・分数消費なし）。
+照会は1回8ページ、15分間隔で1日あたり約768ページになります。負荷を下げたい場合は
+`CHECK_INTERVAL` を伸ばすか、`watchFacilities` を減らして開くページ種別を減らしてください。
 
 **launchd と GitHub Actions を同時に動かさないでください。** `state.json` が2系統に分かれ、
-同じ空席で二重に通知が来ます。
+同じ空席で二重に通知が来ます。既定は GitHub Actions のみで、launchd は登録していません。
 
 ---
 
