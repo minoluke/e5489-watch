@@ -17,7 +17,8 @@
     "ノビノビ座席"
   ],
   "serviceHours": {
-    "start": "05:30",
-    "end": "23:30"
-  }
+    "start": "00:10",
+    "end": "23:45"
+  },
+  "partySize": 2
 }

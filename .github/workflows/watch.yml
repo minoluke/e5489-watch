@@ -1,12 +1,12 @@
 name: サンライズ空席ウォッチ
 
 on:
-  # cron は UTC 指定。JST 5:30〜23:30（e5489 の営業時間）を30分間隔で回す
-  #   JST 05:30 = UTC 20:30 / JST 23:30 = UTC 14:30
+  # e5489 が止まるのは JST 23:50〜0:05 の15分だけなので24時間回す。
+  # その15分に当たった実行はスクリプト側が受付停止を検出して静かに抜ける。
+  # なお GitHub はスケジュール実行を負荷に応じて間引くため、30分間隔で登録しても
+  # 実効間隔は数時間になる（実測: 中央値約3時間）。機会を増やす意味で30分のままにする。
   schedule:
-    - cron: '30 20 * * *'      # JST 5:30
-    - cron: '0,30 21-23 * * *' # JST 6:00〜8:30
-    - cron: '0,30 0-14 * * *'  # JST 9:00〜23:30
+    - cron: '0,30 * * * *'
   workflow_dispatch:
     inputs:
       dry_run:
@@ -33,7 +33,7 @@ permissions:
 jobs:
   check:
     runs-on: ubuntu-latest
-    timeout-minutes: 10
+    timeout-minutes: 20
     steps:
       - uses: actions/checkout@v5
 

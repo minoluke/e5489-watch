@@ -1,166 +1,226 @@
 {
   "scope": "2026-09-27|岡山→東京",
   "statuses": {
-    "サンライズ出雲|サンライズツイン(禁煙)": {
+    "サンライズ出雲|ノビノビ座席(禁煙)": {
       "mark": "×",
-      "bookable": false,
-      "facility": "サンライズツイン",
+      "minSeats": 0,
+      "facility": "ノビノビ座席",
       "smoking": "禁煙",
       "train": "izumo",
-      "kind": "twin"
-    },
-    "サンライズ出雲|サンライズツイン(喫煙)": {
-      "mark": "×",
-      "bookable": false,
-      "facility": "サンライズツイン",
-      "smoking": "喫煙",
-      "train": "izumo",
-      "kind": "twin"
+      "kind": "std",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
     },
     "サンライズ出雲|シングルツイン(禁煙)": {
       "mark": "×",
-      "bookable": false,
+      "minSeats": 0,
       "facility": "シングルツイン",
       "smoking": "禁煙",
       "train": "izumo",
-      "kind": "std"
+      "kind": "std",
+      "capacity": 2,
+      "roomsNeeded": 1,
+      "enough": false
     },
     "サンライズ出雲|シングルツイン(喫煙)": {
       "mark": "×",
-      "bookable": false,
+      "minSeats": 0,
       "facility": "シングルツイン",
       "smoking": "喫煙",
       "train": "izumo",
-      "kind": "std"
-    },
-    "サンライズ瀬戸|サンライズツイン(禁煙)": {
-      "mark": "×",
-      "bookable": false,
-      "facility": "サンライズツイン",
-      "smoking": "禁煙",
-      "train": "seto",
-      "kind": "twin"
-    },
-    "サンライズ瀬戸|サンライズツイン(喫煙)": {
-      "mark": "×",
-      "bookable": false,
-      "facility": "サンライズツイン",
-      "smoking": "喫煙",
-      "train": "seto",
-      "kind": "twin"
-    },
-    "サンライズ瀬戸|シングルツイン(禁煙)": {
-      "mark": "×",
-      "bookable": false,
-      "facility": "シングルツイン",
-      "smoking": "禁煙",
-      "train": "seto",
-      "kind": "std"
-    },
-    "サンライズ瀬戸|シングルツイン(喫煙)": {
-      "mark": "×",
-      "bookable": false,
-      "facility": "シングルツイン",
-      "smoking": "喫煙",
-      "train": "seto",
-      "kind": "std"
-    },
-    "サンライズ出雲|ノビノビ座席(禁煙)": {
-      "mark": "×",
-      "bookable": false,
-      "facility": "ノビノビ座席",
-      "smoking": "禁煙",
-      "train": "izumo",
-      "kind": "std"
+      "kind": "std",
+      "capacity": 2,
+      "roomsNeeded": 1,
+      "enough": false
     },
     "サンライズ出雲|シングルデラックス(禁煙)": {
       "mark": "×",
-      "bookable": false,
+      "minSeats": 0,
       "facility": "シングルデラックス",
       "smoking": "禁煙",
       "train": "izumo",
-      "kind": "std"
+      "kind": "std",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
     },
     "サンライズ出雲|シングルデラックス(喫煙)": {
       "mark": "×",
-      "bookable": false,
+      "minSeats": 0,
       "facility": "シングルデラックス",
       "smoking": "喫煙",
       "train": "izumo",
-      "kind": "std"
+      "kind": "std",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
     },
     "サンライズ出雲|シングル(禁煙)": {
       "mark": "×",
-      "bookable": false,
+      "minSeats": 0,
       "facility": "シングル",
       "smoking": "禁煙",
       "train": "izumo",
-      "kind": "single"
+      "kind": "single",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
     },
     "サンライズ出雲|シングル(喫煙)": {
       "mark": "×",
-      "bookable": false,
+      "minSeats": 0,
       "facility": "シングル",
       "smoking": "喫煙",
       "train": "izumo",
-      "kind": "single"
+      "kind": "single",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
     },
     "サンライズ出雲|ソロ(禁煙)": {
       "mark": "×",
-      "bookable": false,
+      "minSeats": 0,
       "facility": "ソロ",
       "smoking": "禁煙",
       "train": "izumo",
-      "kind": "solo"
+      "kind": "solo",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
     },
-    "サンライズ瀬戸|ノビノビ座席(禁煙)": {
-      "mark": "△",
-      "bookable": true,
-      "facility": "ノビノビ座席",
+    "サンライズ瀬戸|サンライズツイン(禁煙)": {
+      "mark": "×",
+      "minSeats": 0,
+      "facility": "サンライズツイン",
       "smoking": "禁煙",
       "train": "seto",
-      "kind": "std"
+      "kind": "twin",
+      "capacity": 2,
+      "roomsNeeded": 1,
+      "enough": false
     },
-    "サンライズ瀬戸|シングルデラックス(禁煙)": {
+    "サンライズ瀬戸|サンライズツイン(喫煙)": {
       "mark": "×",
-      "bookable": false,
-      "facility": "シングルデラックス",
-      "smoking": "禁煙",
-      "train": "seto",
-      "kind": "std"
-    },
-    "サンライズ瀬戸|シングルデラックス(喫煙)": {
-      "mark": "×",
-      "bookable": false,
-      "facility": "シングルデラックス",
+      "minSeats": 0,
+      "facility": "サンライズツイン",
       "smoking": "喫煙",
       "train": "seto",
-      "kind": "std"
-    },
-    "サンライズ瀬戸|ソロ(禁煙)": {
-      "mark": "×",
-      "bookable": false,
-      "facility": "ソロ",
-      "smoking": "禁煙",
-      "train": "seto",
-      "kind": "solo"
+      "kind": "twin",
+      "capacity": 2,
+      "roomsNeeded": 1,
+      "enough": false
     },
     "サンライズ瀬戸|シングル(禁煙)": {
       "mark": "×",
-      "bookable": false,
+      "minSeats": 0,
       "facility": "シングル",
       "smoking": "禁煙",
       "train": "seto",
-      "kind": "single"
+      "kind": "single",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
     },
     "サンライズ瀬戸|シングル(喫煙)": {
       "mark": "×",
-      "bookable": false,
+      "minSeats": 0,
       "facility": "シングル",
       "smoking": "喫煙",
       "train": "seto",
-      "kind": "single"
+      "kind": "single",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
+    },
+    "サンライズ瀬戸|ソロ(禁煙)": {
+      "mark": "×",
+      "minSeats": 0,
+      "facility": "ソロ",
+      "smoking": "禁煙",
+      "train": "seto",
+      "kind": "solo",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
+    },
+    "サンライズ出雲|サンライズツイン(禁煙)": {
+      "mark": "×",
+      "minSeats": 0,
+      "facility": "サンライズツイン",
+      "smoking": "禁煙",
+      "train": "izumo",
+      "kind": "twin",
+      "capacity": 2,
+      "roomsNeeded": 1,
+      "enough": false
+    },
+    "サンライズ出雲|サンライズツイン(喫煙)": {
+      "mark": "×",
+      "minSeats": 0,
+      "facility": "サンライズツイン",
+      "smoking": "喫煙",
+      "train": "izumo",
+      "kind": "twin",
+      "capacity": 2,
+      "roomsNeeded": 1,
+      "enough": false
+    },
+    "サンライズ瀬戸|ノビノビ座席(禁煙)": {
+      "mark": "△",
+      "minSeats": 1,
+      "facility": "ノビノビ座席",
+      "smoking": "禁煙",
+      "train": "seto",
+      "kind": "std",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
+    },
+    "サンライズ瀬戸|シングルツイン(禁煙)": {
+      "mark": "×",
+      "minSeats": 0,
+      "facility": "シングルツイン",
+      "smoking": "禁煙",
+      "train": "seto",
+      "kind": "std",
+      "capacity": 2,
+      "roomsNeeded": 1,
+      "enough": false
+    },
+    "サンライズ瀬戸|シングルツイン(喫煙)": {
+      "mark": "×",
+      "minSeats": 0,
+      "facility": "シングルツイン",
+      "smoking": "喫煙",
+      "train": "seto",
+      "kind": "std",
+      "capacity": 2,
+      "roomsNeeded": 1,
+      "enough": false
+    },
+    "サンライズ瀬戸|シングルデラックス(禁煙)": {
+      "mark": "×",
+      "minSeats": 0,
+      "facility": "シングルデラックス",
+      "smoking": "禁煙",
+      "train": "seto",
+      "kind": "std",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
+    },
+    "サンライズ瀬戸|シングルデラックス(喫煙)": {
+      "mark": "×",
+      "minSeats": 0,
+      "facility": "シングルデラックス",
+      "smoking": "喫煙",
+      "train": "seto",
+      "kind": "std",
+      "capacity": 1,
+      "roomsNeeded": 2,
+      "enough": false
     }
   },
-  "lastRun": "2026-09-06T15:11:17.216Z"
+  "lastRun": "2026-09-06T15:20:19.416Z"
 }

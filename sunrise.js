@@ -66,6 +66,18 @@ const FACILITY_KIND = {
   'サンライズツイン': 'twin',
 };
 
+// 1室（1席）あたり何人まで乗れるか。
+// サンライズツインは2人用B寝台個室、シングルツインは補助ベッドで2人まで使える。
+// それ以外は1人用なので、2人で乗るには2室（2席）押さえる必要がある。
+const FACILITY_CAPACITY = {
+  'サンライズツイン': 2,
+  'シングルツイン': 2,
+  'シングルデラックス': 1,
+  'シングル': 1,
+  'ソロ': 1,
+  'ノビノビ座席': 1,
+};
+
 // ページ上の車種アイコン(alt) → 設備名。ページの種類ごとに意味が変わる
 const CAR_TO_FACILITY = {
   std:    { '普通車指定席': 'ノビノビ座席', 'B寝台': 'シングルツイン', 'A寝台': 'シングルデラックス' },
@@ -128,5 +140,5 @@ function loginBookingUrl({ train, kind, date, departStName, arriveStName, hour, 
 }
 
 module.exports = {
-  ST_NO, TRAIN_NAME, FACILITY_KIND, CAR_TO_FACILITY, searchUrl, loginBookingUrl,
+  ST_NO, TRAIN_NAME, FACILITY_KIND, FACILITY_CAPACITY, CAR_TO_FACILITY, searchUrl, loginBookingUrl,
 };
