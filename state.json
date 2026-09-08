@@ -122,15 +122,15 @@
       "enough": false
     },
     "サンライズ瀬戸|シングル(禁煙)": {
-      "mark": "△",
-      "minSeats": 1,
+      "mark": "×",
+      "minSeats": 0,
       "facility": "シングル",
       "smoking": "禁煙",
       "train": "seto",
       "kind": "single",
       "capacity": 1,
       "roomsNeeded": 2,
-      "level": 1,
+      "level": 0,
       "enough": false
     },
     "サンライズ瀬戸|シングル(喫煙)": {
@@ -242,5 +242,5 @@
       "enough": false
     }
   },
-  "lastRun": "2026-09-08T06:57:47.588Z"
+  "lastRun": "2026-09-08T07:14:22.287Z"
 }
