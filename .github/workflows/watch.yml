@@ -33,7 +33,8 @@ permissions:
 
 env:
   LOOP_MINUTES: 330   # ループを回す時間（GitHub のジョブ上限は6時間）
-  CHECK_INTERVAL: 180 # ループ内の照会間隔（秒）＝3分。1回の照会に約1分かかるので実効は約4分
+  CHECK_INTERVAL: 60  # 照会が終わってから次を始めるまでの待ち時間（秒）。
+                      # 照会自体に中央値87秒かかるため実効間隔は約2.5分になる
 
 jobs:
   check:
