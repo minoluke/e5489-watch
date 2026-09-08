@@ -342,7 +342,13 @@ async function main() {
   }
 
   // 取得できたキーだけ更新する。取りこぼしたページの状態は前回値を残す
-  saveJson(STATE_PATH, { scope, statuses: { ...prev, ...observed }, lastRun: new Date().toISOString() });
+  /*
+   * lastRun のような毎回変わる値は入れない。GitHub Actions 側は state.json に差分が
+   * あるときだけコミットするため、実際には空席状況が変わっていないのに毎回
+   * コミットが積まれてしまう（実測: 1日206コミット、全て lastRun だけの差分）。
+   * 最終実行時刻はログとコミット日時から分かるので保存しない。
+   */
+  saveJson(STATE_PATH, { scope, statuses: { ...prev, ...observed } });
 }
 
 main().catch((e) => {
