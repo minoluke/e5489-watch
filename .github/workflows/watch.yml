@@ -21,6 +21,10 @@ on:
         description: '空席照会はせず、テストメールだけ送って疎通確認する'
         type: boolean
         default: false
+      loop_minutes:
+        description: '計測用: この分数だけループする（0なら1回だけ）。state は保存しない'
+        type: string
+        default: '0'
 
 concurrency:
   # 新しくスケジュール起動されたら、走っている古いループを止めて引き継ぐ。
@@ -89,6 +93,25 @@ jobs:
             ARGS=""
             if [ "${{ inputs.dry_run }}" = "true" ]; then ARGS="$ARGS --no-email"; fi
             if [ "${{ inputs.force }}"   = "true" ]; then ARGS="$ARGS --force"; fi
+
+            LM="${{ inputs.loop_minutes }}"
+            if [ "${LM:-0}" -gt 0 ] 2>/dev/null; then
+              # 計測用ループ。本番ループと state を取り合わないよう保存しない
+              echo "計測モード: ${LM}分 / CHECK_INTERVAL=${CHECK_INTERVAL}秒"
+              TEND=$(( $(date +%s) + LM * 60 ))
+              M=0
+              while [ "$(date +%s)" -lt "$TEND" ]; do
+                M=$(( M + 1 ))
+                echo "──── 照会 #${M}  $(TZ=Asia/Tokyo date '+%m/%d %H:%M:%S JST') ────"
+                node check.js $ARGS || echo "この回は失敗"
+                REMAIN=$(( TEND - $(date +%s) ))
+                [ "$REMAIN" -le "$CHECK_INTERVAL" ] && break
+                sleep "$CHECK_INTERVAL"
+              done
+              echo "計測終了: ${M} 回照会した"
+              exit 0
+            fi
+
             node check.js $ARGS
             save_state
             exit 0
