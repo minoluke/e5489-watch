@@ -74,15 +74,15 @@
       "enough": false
     },
     "サンライズ出雲|シングル(喫煙)": {
-      "mark": "×",
-      "minSeats": 0,
+      "mark": "△",
+      "minSeats": 1,
       "facility": "シングル",
       "smoking": "喫煙",
       "train": "izumo",
       "kind": "single",
       "capacity": 1,
       "roomsNeeded": 2,
-      "level": 0,
+      "level": 1,
       "enough": false
     },
     "サンライズ出雲|ソロ(禁煙)": {
