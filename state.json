@@ -182,15 +182,15 @@
       "enough": false
     },
     "サンライズ瀬戸|ノビノビ座席(禁煙)": {
-      "mark": "×",
-      "minSeats": 0,
+      "mark": "△",
+      "minSeats": 1,
       "facility": "ノビノビ座席",
       "smoking": "禁煙",
       "train": "seto",
       "kind": "std",
       "capacity": 1,
       "roomsNeeded": 2,
-      "level": 0,
+      "level": 1,
       "enough": false
     },
     "サンライズ瀬戸|シングルツイン(禁煙)": {
