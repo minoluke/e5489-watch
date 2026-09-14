@@ -71,7 +71,7 @@ Playwright 同梱の Chromium はダウンロードしません（システム�
   "searchHour": "14",
   "searchMinute": "05",
   "trains": ["izumo", "seto"],
-  "watchFacilities": ["サンライズツイン", "シングルツイン", "シングルデラックス", "シングル", "ソロ", "ノビノビ座席"],
+  "watchFacilities": ["サンライズツイン", "シングルツイン"],
   "partySize": 2,
   "serviceHours": { "start": "00:10", "end": "23:45" }
 }
