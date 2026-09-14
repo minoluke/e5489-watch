@@ -155,7 +155,12 @@ async function main() {
   const dateLabel = cfg.date;
   const now = nowJst();
 
-  if (date < now.ymd) { log(`乗車日 ${dateLabel} は過去です。監視を終了してください。`); return; }
+  // 乗車日を過ぎたら終了コード9で抜ける。GitHub Actions 側がこれを見て
+  // スケジュールを自動で無効化する（ループが空回りし続けないように）。
+  if (date < now.ymd) {
+    log(`乗車日 ${dateLabel} を過ぎたので監視を終了します`);
+    process.exit(9);
+  }
 
   const [from, to] = [toMinutes(cfg.serviceHours.start), toMinutes(cfg.serviceHours.end)];
   if (!FLAG_FORCE && (now.hhmm < from || now.hhmm >= to)) {
