@@ -125,7 +125,11 @@ jobs:
           while [ "$(date +%s)" -lt "$END" ]; do
             N=$(( N + 1 ))
             echo "──── 照会 #${N}  $(TZ=Asia/Tokyo date '+%m/%d %H:%M JST') ────"
-            node check.js; RC=$?
+            # GitHub の run は bash -e で動くため `node check.js; RC=$?` と書くと
+            # check.js が非ゼロで終了した瞬間にステップごと落ちる。
+            # `|| RC=$?` にすると set -e の対象外になり、ループを続けられる。
+            RC=0
+            node check.js || RC=$?
             if [ "$RC" -eq 9 ]; then
               # 乗車日を過ぎた。空回りし続けないようスケジュールを止める
               echo "乗車日を過ぎたのでワークフローを無効化します"

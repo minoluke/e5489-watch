@@ -13,8 +13,8 @@
     "シングルツイン"
   ],
   "serviceHours": {
-    "start": "00:10",
-    "end": "23:45"
+    "start": "05:30",
+    "end": "01:50"
   },
   "partySize": 2,
   "notifyUncertain": true

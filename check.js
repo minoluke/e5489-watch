@@ -162,9 +162,18 @@ async function main() {
     process.exit(9);
   }
 
+  /*
+   * e5489 の受付時間は 5:30〜翌1:50（臨時メンテナンス時は 5:30〜23:30）。
+   * 終わりが始まりより小さい＝日をまたぐ窓なので、その場合は判定を反転させる。
+   * メンテナンスで早じまいする日は 23:30〜1:50 が受付時間外になるが、
+   * その応答は異常ではないので照会側で静かにスキップする。
+   */
   const [from, to] = [toMinutes(cfg.serviceHours.start), toMinutes(cfg.serviceHours.end)];
-  if (!FLAG_FORCE && (now.hhmm < from || now.hhmm >= to)) {
-    log(`e5489 の営業時間外（${cfg.serviceHours.start}〜${cfg.serviceHours.end} JST）なのでスキップ`);
+  const inWindow = from <= to
+    ? (now.hhmm >= from && now.hhmm < to)
+    : (now.hhmm >= from || now.hhmm < to);
+  if (!FLAG_FORCE && !inWindow) {
+    log(`e5489 の受付時間外（${cfg.serviceHours.start}〜${cfg.serviceHours.end} JST）なのでスキップ`);
     return;
   }
 
@@ -246,8 +255,9 @@ async function main() {
       for (const t of pending) {
         const r = await scrapeOnce(page, S.searchUrl({ ...params, train: t.train, kind: t.kind }));
         if (r.error && /混雑中/.test(r.error)) retry.push(t);
-        else if (r.error && /受付を停止|20100306/.test(r.error)) {
-          // 23:50〜0:05 の受付停止。異常ではないので静かに切り上げる
+        else if (r.error && /受付を停止|受付時間外|20100306|20100941/.test(r.error)) {
+          // 受付停止(23:50〜0:05)・受付時間外(メンテ日の早じまい等)。
+          // どちらも異常ではないので静かに切り上げる
           log(`e5489 が受付停止中のため中断: ${r.error}`);
           suspended = true;
           break;
