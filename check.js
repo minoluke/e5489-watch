@@ -178,11 +178,23 @@ async function main() {
   }
 
   // 監視したい設備から、開くべきページの種類を逆引きする
-  const kinds = [...new Set(cfg.watchFacilities.map((f) => {
-    const k = S.FACILITY_KIND[f];
-    if (!k) throw new Error(`設備「${f}」は未対応です（対応: ${Object.keys(S.FACILITY_KIND).join(' / ')}）`);
-    return k;
-  }))];
+  /*
+   * watchFacilities は「設備名」または「設備名(禁煙)」「設備名(喫煙)」で書ける。
+   * 喫煙区分を付けなければ禁煙・喫煙の両方を監視する。
+   *   例: ["サンライズツイン", "シングルツイン(禁煙)"]
+   *       → サンライズツインは両方、シングルツインは禁煙のみ
+   */
+  const watch = cfg.watchFacilities.map((entry) => {
+    const m = String(entry).match(/^(.+?)(?:\((禁煙|喫煙)\))?$/);
+    const name = m[1];
+    if (!S.FACILITY_KIND[name]) {
+      throw new Error(`設備「${name}」は未対応です（対応: ${Object.keys(S.FACILITY_KIND).join(' / ')}）`);
+    }
+    return { name, smoking: m[2] || null, label: String(entry) };
+  });
+  const wants = (facility, smoking) =>
+    watch.some((w) => w.name === facility && (w.smoking === null || w.smoking === smoking));
+  const kinds = [...new Set(watch.map((w) => S.FACILITY_KIND[w.name]))];
 
   const partySize = Number(cfg.partySize) > 0 ? Number(cfg.partySize) : 1;
 
@@ -217,8 +229,8 @@ async function main() {
           const car = col.alts[0] || '';
           const facility = (S.CAR_TO_FACILITY[t.kind] || {})[car];
           if (!facility) continue;                       // このページの本命でない列は無視
-          if (!cfg.watchFacilities.includes(facility)) continue;
           const smoking = (col.alts[1] || '').includes('喫煙') ? '喫煙' : '禁煙';
+          if (!wants(facility, smoking)) continue;
           const st = STATUS[col.status] || { mark: col.status || '?', minSeats: 0 };
           const capacity = S.FACILITY_CAPACITY[facility] || 1;
           const roomsNeeded = Math.ceil(partySize / capacity);
@@ -280,7 +292,7 @@ async function main() {
   // config の watchFacilities の並び順を優先度とみなして並べる（本命が件名の先頭に来るように）
   const rank = (k) => {
     const o = observed[k];
-    const i = cfg.watchFacilities.indexOf(o.facility);
+    const i = watch.findIndex((w) => w.name === o.facility && (w.smoking === null || w.smoking === o.smoking));
     return [i < 0 ? 99 : i, o.train, o.smoking === '禁煙' ? 0 : 1];
   };
   if (suspended) { log('受付停止中のため今回はスキップしました（state は変更しません）'); return; }
