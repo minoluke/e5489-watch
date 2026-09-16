@@ -13,18 +13,6 @@
       "level": 0,
       "enough": false
     },
-    "サンライズ出雲|シングルツイン(禁煙)": {
-      "mark": "×",
-      "minSeats": 0,
-      "facility": "シングルツイン",
-      "smoking": "禁煙",
-      "train": "izumo",
-      "kind": "std",
-      "capacity": 2,
-      "roomsNeeded": 1,
-      "level": 0,
-      "enough": false
-    },
     "サンライズ瀬戸|サンライズツイン(禁煙)": {
       "mark": "×",
       "minSeats": 0,
@@ -32,18 +20,6 @@
       "smoking": "禁煙",
       "train": "seto",
       "kind": "twin",
-      "capacity": 2,
-      "roomsNeeded": 1,
-      "level": 0,
-      "enough": false
-    },
-    "サンライズ瀬戸|シングルツイン(禁煙)": {
-      "mark": "×",
-      "minSeats": 0,
-      "facility": "シングルツイン",
-      "smoking": "禁煙",
-      "train": "seto",
-      "kind": "std",
       "capacity": 2,
       "roomsNeeded": 1,
       "level": 0,
